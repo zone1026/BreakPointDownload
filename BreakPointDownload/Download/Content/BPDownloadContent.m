@@ -16,7 +16,7 @@
 @implementation BPDownloadContent
 
 - (NSString *)cacheFilePath{
-    return [BPFileManager getDownloadCachePathWith:self.fileName];
+    return [BPFileManager getDownloadCachePathWithFilePath:(self.filePath?self.filePath:@"") WithFileName:self.fileName];
 }
 
 - (long long)currentFileSize{

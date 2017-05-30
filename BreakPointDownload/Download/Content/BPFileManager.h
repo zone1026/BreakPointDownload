@@ -10,7 +10,7 @@
 
 @interface BPFileManager : NSObject
 
-+ (NSString*)getDownloadCachePathWith:(NSString*)fileName;
++ (NSString*)getDownloadCachePathWithFilePath:(NSString*)filePath WithFileName:(NSString*)fileName;
 
 // 获取
 + (long long)getLengthForFilePath:(NSString*)filePath;

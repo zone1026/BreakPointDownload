@@ -24,6 +24,8 @@ typedef NS_ENUM(NSUInteger, EDownloadState) {
 
 // 下载的文件名字（ps:需要有后缀）
 @property (nonatomic, copy) NSString *fileName;
+// 下载文件的相对（Library/Caches）地址
+@property (nonatomic, copy) NSString *filePath;
 // 下载文件的完整地址（存储文件夹+文件名）
 @property (nonatomic, copy) NSString *cacheFilePath;
 // 服务器上文件总大小

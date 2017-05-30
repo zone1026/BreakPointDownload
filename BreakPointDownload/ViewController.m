@@ -24,10 +24,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    NSString *cacheDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
     BPDownloadContent *aContent = [[BPDownloadContent alloc] init];
     aContent.urlString = @"http://static.meishubao.com/video/2016-05-18/mCah6DSkD5.mp4";//http://hb-video.oss-cn-beijing.aliyuncs.com/20/1/0/227/f6ed9ef063ba51ff9440959c70fce0e8.mp4
-    aContent.cacheFilePath = cacheDir;
+    aContent.filePath = @"download/video";
     aContent.fileName = @"mCah6DSkD5.mp4";
     aContent.extenInfo = @{@"11":@"11",@"22":@[@"aa",@"aa1"]};
     [[BPNetWorkService shared] downloadContent:aContent onProgress:^(int64_t completeBytes, int64_t totalBytes) {

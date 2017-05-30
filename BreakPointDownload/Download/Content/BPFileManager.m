@@ -10,9 +10,9 @@
 
 @implementation BPFileManager
 
-+ (NSString*)getDownloadCachePathWith:(NSString*)fileName {
++ (NSString*)getDownloadCachePathWithFilePath:(NSString*)filePath WithFileName:(NSString*)fileName {
     NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject;
-    return [self getRootPath:cachePath fileName:fileName];
+    return [self getRootPath:[NSString stringWithFormat:@"%@/%@", cachePath, filePath] fileName:fileName];
 }
 
 + (NSString *)getRootPath:(NSString*)path fileName:(NSString*)fileName{

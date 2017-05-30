@@ -26,6 +26,7 @@ typedef NS_ENUM(NSUInteger, EDownloadFinishType) {
 @property (nonatomic, assign) long long startLenght;
 @property (nonatomic, strong) NSURLSessionDataTask *dataTask;
 @property (atomic, assign) NSTimeInterval timeStamp; // 单写多读
+@property (nonatomic, strong) NSOutputStream *stream;
 
 @end
 
@@ -79,6 +80,7 @@ typedef NS_ENUM(NSUInteger, EDownloadFinishType) {
 }
 
 #pragma mark - 请求封装，获取文件头信息 从0下载 断点下载
+
 // 获取请求头信息
 - (void)getFileHead:(void (^)(NSDictionary *headerFields))aBlock{
     
@@ -100,17 +102,16 @@ typedef NS_ENUM(NSUInteger, EDownloadFinishType) {
     [dataTask resume];
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error{
-    if (error == nil) {
-        [self downloadSuccess];
-    }else{
-        [self downloadFailWithError:error];
-    }
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
+    //打开输入管道
+//    [self.stream open];
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data{
     
+    //通过管道写入下载数据
     [self saveFileData:data];
+//    [self.stream write:data.bytes maxLength:data.length];
     
     NSTimeInterval newTime = [NSDate date].timeIntervalSince1970;
     if (newTime - self.timeStamp < 1.0) {
@@ -122,6 +123,18 @@ typedef NS_ENUM(NSUInteger, EDownloadFinishType) {
     if (self.downloadProgress) {
         self.downloadProgress(dataTask.countOfBytesReceived + self.startLenght,dataTask.countOfBytesExpectedToReceive + self.startLenght);
     }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error{
+    if (error == nil) {
+        [self downloadSuccess];
+    }else{
+        [self downloadFailWithError:error];
+    }
+    
+    //关闭输入管道
+//    [self.stream close];
+//    self.stream = nil;
 }
 
 #pragma mark - 失败成功回调
@@ -180,12 +193,22 @@ typedef NS_ENUM(NSUInteger, EDownloadFinishType) {
     return [BPFileManager deleteLocalFilePath:self.downloadFilePath];
 }
 
-#pragma mark - 懒加载
+#pragma mark - lazy load
+
 - (NSString *)downloadFilePath{
     if (!_downloadFilePath) {
-        return self.aContent.cacheFilePath;
+        _downloadFilePath = self.aContent.cacheFilePath;
     }
     return _downloadFilePath;
+}
+
+-(NSOutputStream *)stream{
+    
+    if (_stream == nil) {
+        _stream = [NSOutputStream outputStreamToFileAtPath:self.aContent.cacheFilePath append:YES];
+    }
+    
+    return _stream;
 }
 
 @end

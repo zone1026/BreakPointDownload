@@ -110,7 +110,7 @@
 #pragma mark - NSURLSessionDelegate
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-    
+    NSLog(@"");
 }
 
 #pragma mark - NSURLSessionTaskDelegate
@@ -122,15 +122,22 @@
 
 #pragma mark - NSURLSessionDataDelegate
 
+//接受到响应
+//- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(nonnull NSURLResponse *)response completionHandler:(nonnull void (^)(NSURLSessionResponseDisposition))completionHandler {
+//    BPDownloader *downloader = self.dictDownloader[dataTask.taskDescription];
+//    [downloader URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
+//}
+
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
     BPDownloader *downloader = self.dictDownloader[dataTask.taskDescription];
     [downloader URLSession:session dataTask:dataTask didReceiveData:data];
 }
 
+#pragma mark - private
+
 - (void)setDownload:(BPDownloader *)downloader forUrlString:(NSString *)urlString{
     self.dictDownloader[[urlString MD5String]] = downloader;
 }
-
 
 #pragma mark - lazy load
 
